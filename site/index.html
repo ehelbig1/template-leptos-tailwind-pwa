@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Website Template</title>
+    <meta name="description" content="This website is a template for building other websites">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="http://localhost:8080">
+    <link rel="icon" type="image/png" href="public/icons/icon-256.png">
+    <link rel="preconnect" href="http://localhost:8080">
+    <link rel="dns-prefetch" href="http://localhost:8080">
+    <meta property="og:title" content="Website Template">
+    <meta property="og:description" content="This website is a template for building other websites">
+    <meta property="og:image" content="public/icons/icon-256.png">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#007bff">
+
+
+    <link data-trunk rel="rust" data-wasm-opt="z"/>
+    <link data-trunk rel="css" href="/style/output.css"/>
+    <link data-trunk rel="copy-file" href="manifest.json"/>
+    <link data-trunk rel="copy-file" href="service_worker.js">
+    <link rel="manifest" href="./manifest.json">
+    <link data-trunk rel="copy-dir" href="/public"/>
+
+    <script>
+        // register ServiceWorker
+        window.onload = () => {
+            'use strict';
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker
+                        .register('./service_worker.js');
+            }
+        }
+    </script>
+  </head>
+  <body></body>
+</html>

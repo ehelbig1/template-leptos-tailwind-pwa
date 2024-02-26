@@ -1,0 +1,30 @@
+{
+    "name": "Template",
+    "short_name": "Template",
+    "icons": [
+      {
+        "src": "public/icons/icon-256.png",
+        "type": "image/png",
+        "sizes": "256x256",
+        "purpose": "any"
+      },
+      {
+        "src": "public/icons/icon-512.png",
+        "type": "image/png",
+        "sizes": "512x512",
+        "purpose": "any"
+      },
+      {
+        "src": "public/icons/icon-512.png",
+        "type": "image/png",
+        "sizes": "512x512",
+        "purpose": "maskable"
+      }
+    ],
+    "lang": "en-US",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "white",
+    "theme_color": "white"
+  }
+  
