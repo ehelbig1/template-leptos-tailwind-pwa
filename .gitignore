@@ -2,3 +2,5 @@ target
 dist
 node_modules
 style
+.venv
+infrastructure/cdk.out

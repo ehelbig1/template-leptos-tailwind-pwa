@@ -1,0 +1,3 @@
+aws-cdk-lib<3
+chalice<2
+python-dotenv<2

@@ -1,0 +1,93 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: us-east-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: "20"
+
+    - name: Install pip
+      run: |
+        python -m pip install --upgrade pip
+        pip install --upgrade setuptools
+
+    - name: Install Zig toolchain
+      uses: korandoru/setup-zig@v1
+      with:
+        zig-version: 0.10.0
+
+    - name: Install Cargo Lambda
+      uses: jaxxstorm/action-install-gh-release@v1.9.0
+      with:
+        repo: cargo-lambda/cargo-lambda
+        tag: v0.14.0 # Remove this if you want to grab always the latest version
+        platform: linux # Other valid options: 'windows' or 'darwin'
+        arch: x86_64
+
+    - name: Install Leptos
+      run: |
+        run: cargo install leptos
+
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: Load Secrets
+      uses: 1password/load-secrets-action@v1
+      with:
+        export-env: true
+      env:
+        OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_HOST }}
+        OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
+        
+
+    - name: configure aws credentials for deployment
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        role-to-assume: arn:aws:iam::421337506538:role/GitHubActionsCDKDeployment
+        role-session-name: CDKDeployRole
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: build
+      run: |
+        cd site
+        leptos build --release
+
+      
+
+    - name: Deploy
+      run: |
+        npm install -g aws-cdk
+        pip install -r requirements.txt
+        cd infrastructure
+        cdk deploy --all --require-approval never
